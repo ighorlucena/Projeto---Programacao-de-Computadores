@@ -1,1 +1,42 @@
+def mostrar_sala(sala):
+    print("\nMapa da Sala:")
+    for i, linha in enumerate(sala):
+        print(f"{i} " + " ".join(linha))
+
+def menu():
+    print("\n1. Ver sala")
+    print("2. Reservar assento")
+    print("3. Sair")
+    return input("Escolha: ")
+
+def coordenadas_validas(linha, coluna, sala):
+    return linha.isdigit() and coluna.isdigit() and \
+           0 <= int(linha) < len(sala) and 0 <= int(coluna) < len(sala[0])
+
+def main():
+    sala = [["O"] * 5 for _ in range(3)]  # Sala com 3 linhas e 5 colunas
+    while True:
+        opcao = menu()
+        if opcao == "1":
+            mostrar_sala(sala)
+        elif opcao == "2":
+            mostrar_sala(sala)
+            l = input("Linha: ")
+            c = input("Coluna: ")
+            if coordenadas_validas(l, c, sala):
+                l, c = int(l), int(c)
+                if sala[l][c] == "O":
+                    sala[l][c] = "X"
+                    print("Assento reservado!")
+                else:
+                    print("Assento ocupado.")
+            else:
+                print("Coordenadas inválidas.")
+        elif opcao == "3":
+            print("Tchau!")
+            break
+        else:
+            print("Opção inválida.")
+
+main()
 
