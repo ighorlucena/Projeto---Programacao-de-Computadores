@@ -14,7 +14,7 @@ def coordenadas_validas(linha, coluna, sala):
            0 <= int(linha) < len(sala) and 0 <= int(coluna) < len(sala[0])
 
 def main():
-    sala = [["O"] * 5 for _ in range(3)]  # Sala com 3 linhas e 5 colunas
+    sala = [["O"] * 15 for _ in range(10)]
     while True:
         opcao = menu()
         if opcao == "1":
