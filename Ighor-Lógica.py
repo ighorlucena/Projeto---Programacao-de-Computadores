@@ -33,4 +33,29 @@ def reservar_cadeira():
         print("A cadeira já está ocupada.")
     elif estado == "B":
         print("A cadeira está bloqueada e não pode ser reservada.")
-        
+
+def cancelar_reserva():
+    linha = input("Digite a letra da linha (A-J): ").strip().upper()
+    coluna = input("Digite o número da coluna (1-15): ").strip()
+
+    if not coluna.isdigit():
+        print("Coluna inválida. Digite apenas números de 1 a 15.")
+        return
+    
+    linha_idx = linha_para_indice(linha)
+    coluna_idx = int(coluna) - 1
+
+    if not coordenadas_validas(linha_idx, coluna_idx):
+        print("Coordenadas fora dos limites da sala.")
+        return
+    
+    estado = sala[linha_idx][coluna_idx]
+
+    if estado == "X":
+        sala[linha_idx][coluna_idx] = "0"
+        print("Reserva cancelada com sucesso.")
+    elif estado == "0":
+        print("A cadeira já está livre")
+    elif estado == "B":
+        print("A cadeira está bloqueada e não pode ser alterada.")
+    
