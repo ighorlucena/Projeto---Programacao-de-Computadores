@@ -1,32 +1,36 @@
 sala = [["0" for _ in range(15)] for _ in range(10)]
 
 def linha_para_indice(letra):
-    letra = letra.upper()
+    letra = letra.strip().upper()
     if letra in "ABCDEFGHIJ":
         return ord(letra) - ord("A")
-    else:
-        return -1
-    
+    return -1
+
+def coordenadas_validas(linha_idx, coluna_idx):
+    return 0 <= linha_idx < 10 and 0 <= coluna_idx < 15
+
 def reservar_cadeira():
-    linha = input("Digite a letra da Linha (A-J): ").upper()
-    coluna = input("Digite o número da coluna (1-15): ")
+    linha = input("Digite a letra da Linha (A-J): ").strip().upper()
+    coluna = input("Digite o número da coluna (1-15): ").strip()
 
     if not coluna.isdigit():
-        print("Coluna inválida")
+        print("Coluna inválida. Digite apenas números de 1 a 15.")
         return
     
     linha_idx = linha_para_indice(linha)
     coluna_idx = int(coluna) - 1
 
-    if linha_idx == -1 or not (0 <= coluna_idx < 15):
-        print("Coordenadas fora dos limites.")
-        return 
+    if not coordenadas_validas(linha_idx, coluna_idx):
+        print("Coordenadas fora dos limites da sala.")
+        return
     
-    if sala[linha_idx][coluna_idx] == "0":
+    estado = sala[linha_idx][coluna_idx]
+
+    if estado == "0":
         sala[linha_idx][coluna_idx] = "X"
         print("Reserva realizada com sucesso.")
-    elif sala[linha_idx][coluna_idx] == "X":
-        print("Cadeira já está ocupada.")
-    elif sala[linha_idx][coluna_idx] == "B":
-        print("Cadeira está bloqueada.")
- 
+    elif estado == "X":
+        print("A cadeira já está ocupada.")
+    elif estado == "B":
+        print("A cadeira está bloqueada e não pode ser reservada.")
+        
