@@ -1,12 +1,14 @@
 def mostrar_sala(sala):
     print("\nMapa da Sala:")
+    print("   " + " ".join(f"{i:>2}" for i in range(len(sala[0]))))
     for i, linha in enumerate(sala):
-        print(f"{i} " + " ".join(linha))
+        print(f"{i:>2} " + " ".join(f"{assento:>2}" for assento in linha))
 
 def menu():
     print("\n1. Ver sala")
     print("2. Reservar assento")
-    print("3. Sair")
+    print("3. Bloquear assento")
+    print("4. Sair")
     return input("Escolha: ")
 
 def coordenadas_validas(linha, coluna, sala):
@@ -28,15 +30,34 @@ def main():
                 if sala[l][c] == "O":
                     sala[l][c] = "X"
                     print("Assento reservado!")
-                else:
-                    print("Assento ocupado.")
+                elif sala[l][c] == "X":
+                    print("Assento já está reservado.")
+                elif sala[l][c] == "B":
+                    print("Assento bloqueado. Não pode ser reservado.")
             else:
                 print("Coordenadas inválidas.")
         elif opcao == "3":
+            mostrar_sala(sala)
+            l = input("Linha a bloquear: ")
+            c = input("Coluna a bloquear: ")
+            if coordenadas_validas(l, c, sala):
+                l, c = int(l), int(c)
+                if sala[l][c] == "O":
+                    sala[l][c] = "B"
+                    print("Assento bloqueado!")
+                elif sala[l][c] == "X":
+                    print("Assento já reservado. Não pode ser bloqueado.")
+                elif sala[l][c] == "B":
+                    print("Assento já está bloqueado.")
+            else:
+                print("Coordenadas inválidas.")
+        elif opcao == "4":
             print("Tchau!")
             break
         else:
             print("Opção inválida.")
 
 main()
+
+
 
