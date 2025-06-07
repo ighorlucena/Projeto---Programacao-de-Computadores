@@ -18,6 +18,9 @@ def reservar_cadeira():
         return
     
     linha_idx = linha_para_indice(linha)
+    if linha_idx == -1:
+        print("Linha inválida. Digite uma letra de A a J.")
+        return
     coluna_idx = int(coluna) - 1
 
     if not coordenadas_validas(linha_idx, coluna_idx):
@@ -43,6 +46,9 @@ def cancelar_reserva():
         return
     
     linha_idx = linha_para_indice(linha)
+    if linha_idx == -1:
+        print("Linha inválida. Digite uma letra de A a J.")
+        return
     coluna_idx = int(coluna) - 1
 
     if not coordenadas_validas(linha_idx, coluna_idx):
@@ -90,6 +96,9 @@ def bloquear_cadeira():
         return
     
     linha_idx = linha_para_indice(linha)
+    if linha_idx == -1:
+        print("Linha inválida. Digite uma letra de A a J.")
+        return
     coluna_idx = int(coluna) - 1
 
     if not coordenadas_validas(linha_idx, coluna_idx):
@@ -114,7 +123,10 @@ def desbloquear_cadeira():
         print("Coluna inválida. Digite apenas números de 1 a 15")
         return
     
-    linha_idx = linha_para_indice
+    linha_idx = linha_para_indice(linha)
+    if linha_idx == -1:
+        print("Linha inválida. Digite uma letra de A a J.")
+        return
     coluna_idx = int(coluna) - 1
 
     if not coordenadas_validas(linha_idx, coluna_idx):
@@ -133,11 +145,12 @@ def desbloquear_cadeira():
 
 def mostrar_sala():
     print("\n Mapa da Sala de Cinema\n")
+    print("Legenda: 0 = Livre, X = Ocupada, B = Bloqueada\n")
 
     print("    " + " ".join(f"{i:02}" for i in range(1, 16)))
 
     for i, linha in enumerate(sala):
         letra_linha = chr(ord("A") + i)
         print(f"{letra_linha} | " + " ".join(linha))
-
+        
     print("")
