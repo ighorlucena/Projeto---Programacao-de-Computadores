@@ -58,4 +58,26 @@ def cancelar_reserva():
         print("A cadeira já está livre")
     elif estado == "B":
         print("A cadeira está bloqueada e não pode ser alterada.")
+
+def ver_ocupacao():
+    livres = 0
+    ocupadas = 0
+    bloqueadas = 0 
+
+    for linha in sala: 
+        for cadeira in linha:
+            if cadeira == "0":
+                livres += 1
+            elif cadeira == "X":
+                ocupadas += 1
+            elif cadeira == "B":
+                bloqueadas += 1
+
+    total = livres + ocupadas + bloqueadas 
+
+    print("\n status atual da sala:")
+    print(f"Total de Cadeiras:   {total}")
+    print(f" - Livres:           {livres}")
+    print(f" - Ocupadas:         {ocupadas}")
+    print(f" - Bloqueadas:       {bloqueadas}\n")
     
