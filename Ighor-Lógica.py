@@ -80,4 +80,64 @@ def ver_ocupacao():
     print(f" - Livres:           {livres}")
     print(f" - Ocupadas:         {ocupadas}")
     print(f" - Bloqueadas:       {bloqueadas}\n")
+
+def bloquear_cadeira():
+    linha = input("Digite a letra da linha (A-J): ").strip().upper()
+    coluna = input("Digite o número da coluna (1-15): ").strip()
+
+    if not coluna.isdigit():
+        print("Coluna inválida. Digite apenas números de 1 a 15.")
+        return
     
+    linha_idx = linha_para_indice(linha)
+    coluna_idx = int(coluna) - 1
+
+    if not coordenadas_validas(linha_idx, coluna_idx):
+        print("Coordenadas fora dos limites da sala.")
+        return
+    
+    estado = sala[linha_idx][coluna_idx]
+
+    if estado == "0":
+        sala[linha_idx][coluna_idx] = "B"
+        print("Cadeira Bloqueada com Sucesso.")
+    elif estado == "X":
+        print("A cadeira está ocupada. Cancele antes de bloquear.")
+    elif estado == "B":
+        print("A cadeira já está bloqueada.")
+
+def desbloquear_cadeira():
+    linha = input("Digite a letra da linha (A-J): ").strip().upper()
+    coluna = input("Digite o número da coluna (1-15): ").strip()
+    
+    if not coluna.isdigit():
+        print("Coluna inválida. Digite apenas números de 1 a 15")
+        return
+    
+    linha_idx = linha_para_indice
+    coluna_idx = int(coluna) - 1
+
+    if not coordenadas_validas(linha_idx, coluna_idx):
+        print("Coordenadas fora dos limites da sala.")
+        return
+    
+    estado = sala[linha_idx][coluna_idx]
+    
+    if estado == "B":
+        sala[linha_idx][coluna_idx] = "0"
+        print("Cadeira desbloqueada com sucesso.")
+    elif estado == "0":
+        print("A cadeira já está livre.")
+    elif estado == "X":
+        print("A cadeira está ocupada e não está bloqueada.")
+
+def mostrar_sala():
+    print("\n Mapa da Sala de Cinema\n")
+
+    print("    " + " ".join(f"{i:02}" for i in range(1, 16)))
+
+    for i, linha in enumerate(sala):
+        letra_linha = chr(ord("A") + i)
+        print(f"{letra_linha} | " + " ".join(linha))
+
+    print("")
