@@ -29,7 +29,7 @@ def reservar_cadeira():
     
     estado = sala[linha_idx][coluna_idx]
 
-    if estado == "0":
+    if estado == "O":
         sala[linha_idx][coluna_idx] = "X"
         print("Reserva realizada com sucesso.")
     elif estado == "X":
@@ -58,9 +58,9 @@ def cancelar_reserva():
     estado = sala[linha_idx][coluna_idx]
 
     if estado == "X":
-        sala[linha_idx][coluna_idx] = "0"
+        sala[linha_idx][coluna_idx] = "O"
         print("Reserva cancelada com sucesso.")
-    elif estado == "0":
+    elif estado == "O":
         print("A cadeira já está livre")
     elif estado == "B":
         print("A cadeira está bloqueada e não pode ser alterada.")
@@ -72,7 +72,7 @@ def ver_ocupacao():
 
     for linha in sala: 
         for cadeira in linha:
-            if cadeira == "0":
+            if cadeira == "O":
                 livres += 1
             elif cadeira == "X":
                 ocupadas += 1
@@ -107,7 +107,7 @@ def bloquear_cadeira():
     
     estado = sala[linha_idx][coluna_idx]
 
-    if estado == "0":
+    if estado == "O":
         sala[linha_idx][coluna_idx] = "B"
         print("Cadeira Bloqueada com Sucesso.")
     elif estado == "X":
@@ -136,16 +136,16 @@ def desbloquear_cadeira():
     estado = sala[linha_idx][coluna_idx]
     
     if estado == "B":
-        sala[linha_idx][coluna_idx] = "0"
+        sala[linha_idx][coluna_idx] = "O"
         print("Cadeira desbloqueada com sucesso.")
-    elif estado == "0":
+    elif estado == "O":
         print("A cadeira já está livre.")
     elif estado == "X":
         print("A cadeira está ocupada e não está bloqueada.")
 
 def mostrar_sala():
     print("\n Mapa da Sala de Cinema\n")
-    print("Legenda: 0 = Livre, X = Ocupada, B = Bloqueada\n")
+    print("Legenda: O = Livre, X = Ocupada, B = Bloqueada\n")
 
     print("    " + " ".join(f"{i:02}" for i in range(1, 16)))
 
