@@ -1,4 +1,4 @@
-sala = [["0" for _ in range(15)] for _ in range(10)]
+sala = [["O" for _ in range(15)] for _ in range(10)]
 
 def linha_para_indice(letra):
     letra = letra.strip().upper()
@@ -142,15 +142,3 @@ def desbloquear_cadeira():
         print("A cadeira já está livre.")
     elif estado == "X":
         print("A cadeira está ocupada e não está bloqueada.")
-
-def mostrar_sala():
-    print("\n Mapa da Sala de Cinema\n")
-    print("Legenda: O = Livre, X = Ocupada, B = Bloqueada\n")
-
-    print("    " + " ".join(f"{i:02}" for i in range(1, 16)))
-
-    for i, linha in enumerate(sala):
-        letra_linha = chr(ord("A") + i)
-        print(f"{letra_linha} | " + " ".join(linha))
-        
-    print("")
