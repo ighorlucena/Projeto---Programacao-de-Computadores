@@ -8,7 +8,7 @@ def linha_para_indice(letra):
 
 def coordenadas_validas(linha_idx, coluna_idx):
     return 0 <= linha_idx < 10 and 0 <= coluna_idx < 15
-
+1
 def mostrar_sala():
     print("\n Mapa da Sala de Cinema\n")
     print("Legenda: O = Livre, X = Ocupada, B = Bloqueada\n")
@@ -186,5 +186,123 @@ def main():
             break
         else:
             print("Opção inválida.")
+
+import tkinter as tk
+from tkinter import messagebox
+
+LINHAS = 10
+COLUNAS = 15
+
+class CinemaGUI:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Sistema de Reserva de Assentos - Cinema")
+
+        self.modo = tk.StringVar(value="reservar")
+
+        self.sala = [["O"] * COLUNAS for _ in range(LINHAS)]
+
+        self.criar_interface()
+
+    def criar_interface(self):
+        frame_top = tk.Frame(self.master)
+        frame_top.pack(pady=10)
+
+        tk.Label(frame_top, text="Modo atual:").pack(side=tk.LEFT, padx=5)
+
+        modos = [("Reservar", "reservar"), ("Cancelar Reserva", "cancelar"),
+                 ("Bloquear", "bloquear"), ("Desbloquear", "desbloquear")]
+
+        for texto, valor in modos:
+            tk.Radiobutton(frame_top, text=texto, variable=self.modo, value=valor).pack(side=tk.LEFT, padx=5)
+
+        self.frame_sala = tk.Frame(self.master)
+        self.frame_sala.pack()
+
+        self.botoes = []
+        for i in range(LINHAS):
+            linha_botoes = []
+            for j in range(COLUNAS):
+                label = f"{chr(ord('A') + i)}{j+1}"
+                btn = tk.Button(self.frame_sala, text=label, width=4, height=2,
+                                font=("Arial", 10),
+                                command=lambda x=i, y=j: self.clique_assento(x, y))
+                btn.grid(row=i, column=j, padx=1, pady=1)
+                linha_botoes.append(btn)
+            self.botoes.append(linha_botoes)
+
+        # Legenda
+        frame_legenda = tk.Frame(self.master)
+        frame_legenda.pack(pady=10)
+
+        tk.Label(frame_legenda, text="Legenda:").pack()
+        tk.Label(
+            frame_legenda,
+            text="Verde = Livre   Vermelho = Ocupado   Cinza = Bloqueado",
+            font=("Arial", 10)
+        ).pack()
+
+        self.atualizar_mapa()
+
+    def clique_assento(self, i, j):
+        estado = self.sala[i][j]
+        posicao = f"{chr(ord('A') + i)}{j+1}"
+        modo = self.modo.get()
+
+        if modo == "reservar":
+            if estado == "O":
+                self.sala[i][j] = "X"
+                messagebox.showinfo("Reserva", f"Assento {posicao} reservado com sucesso!")
+            elif estado == "X":
+                messagebox.showwarning("Reservado", f"Assento {posicao} já está reservado.")
+            elif estado == "B":
+                messagebox.showerror("Bloqueado", f"Assento {posicao} está bloqueado e não pode ser reservado.")
+
+        elif modo == "cancelar":
+            if estado == "X":
+                self.sala[i][j] = "O"
+                messagebox.showinfo("Cancelado", f"Reserva do assento {posicao} cancelada.")
+            elif estado == "O":
+                messagebox.showwarning("Livre", f"Assento {posicao} já está livre.")
+            elif estado == "B":
+                messagebox.showerror("Bloqueado", f"Assento {posicao} está bloqueado e não pode ser alterado.")
+
+        elif modo == "bloquear":
+            if estado == "O":
+                self.sala[i][j] = "B"
+                messagebox.showinfo("Bloqueado", f"Assento {posicao} bloqueado com sucesso.")
+            elif estado == "X":
+                messagebox.showwarning("Reservado", f"Assento {posicao} está ocupado. Cancele antes de bloquear.")
+            elif estado == "B":
+                messagebox.showinfo("Bloqueado", f"Assento {posicao} já está bloqueado.")
+
+        elif modo == "desbloquear":
+            if estado == "B":
+                self.sala[i][j] = "O"
+                messagebox.showinfo("Desbloqueado", f"Assento {posicao} desbloqueado com sucesso.")
+            elif estado == "O":
+                messagebox.showinfo("Livre", f"Assento {posicao} já está livre.")
+            elif estado == "X":
+                messagebox.showwarning("Ocupado", f"Assento {posicao} está ocupado e não pode ser desbloqueado.")
+
+        self.atualizar_mapa()
+
+    def atualizar_mapa(self):
+        for i in range(LINHAS):
+            for j in range(COLUNAS):
+                estado = self.sala[i][j]
+                btn = self.botoes[i][j]
+                if estado == "O":
+                    btn.config(bg="green", state=tk.NORMAL)
+                elif estado == "X":
+                    btn.config(bg="red", state=tk.DISABLED)
+                elif estado == "B":
+                    btn.config(bg="gray", state=tk.DISABLED)
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = CinemaGUI(root)
+    root.mainloop()
+
 
 main()
