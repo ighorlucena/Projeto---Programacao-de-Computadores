@@ -1,22 +1,35 @@
 sala = [["O" for _ in range(15)] for _ in range(10)]
 
 def linha_para_indice(letra):
-    return ord(letra.upper()) - ord("A")
+    letra = letra.strip().upper()
+    if letra in "ABCDEFGHIJ":
+        return ord(letra) - ord("A")
+    return -1
 
 def coordenadas_validas(linha, coluna):
     return 0 <= linha < 10 and 0 <= coluna < 15
 
 def mostrar_sala():
-    print("\nMapa da Sala:")
-    print("   " + " ".join([str(i+1).rjust(2) for i in range(15)]))
+    print("\n Mapa da Sala de Cinema\n")
+    print("Legenda: O = Livre, X = Ocupada, B = Bloqueada\n")
+
+    print("    " + " ".join(f"{i:02}" for i in range(1, 16)))
+
     for i, linha in enumerate(sala):
-        letra = chr(ord("A") + i)
-        print(letra + "  " + " ".join(linha))
+        letra_linha = chr(ord("A") + i)
+        print(f"{letra_linha} | " + " ".join(linha))
+        
+    print("")
 
 def menu():
-    print("\n1. Ver sala")
+    print("\n--- MENU ---")
+    print("1. Ver sala")
     print("2. Reservar assento")
-    print("3. Sair")
+    print("3. Cancelar reserva")
+    print("4. Bloquear assento")
+    print("5. Desbloquear assento")
+    print("6. Ver ocupação")
+    print("7. Sair")
     return input("Escolha: ")
 
 def main():
@@ -25,40 +38,20 @@ def main():
         if opcao == "1":
             mostrar_sala()
         elif opcao == "2":
-            mostrar_sala()
-            l = input("Digite a letra da linha (A-J): ").strip().upper()
-            c = input("Digite o número da coluna (1-15): ").strip()
-            
-            if not c.isdigit():
-                print("Coluna inválida.")
-                continue
-
-            linha_idx = linha_para_indice(l)
-            coluna_idx = int(c) - 1
-
-            if coordenadas_validas(linha_idx, coluna_idx):
-                if sala[linha_idx][coluna_idx] == "O":
-                    sala[linha_idx][coluna_idx] = "X"
-                    print("Assento reservado!")
-                else:
-                    print("Assento ocupado.")
-            else:
-                print("Coordenadas inválidas.")
+            reservar_cadeira()
         elif opcao == "3":
+            cancelar_reserva()
+        elif opcao == "4":
+            bloquear_cadeira()
+        elif opcao == "5":
+            desbloquear_cadeira()
+        elif opcao == "6":
+            ver_ocupacao()
+        elif opcao == "7":
             print("Tchau!")
             break
         else:
             print("Opção inválida.")
-
-main()
-
-sala = [["O" for _ in range(15)] for _ in range(10)]
-
-def linha_para_indice(letra):
-    letra = letra.strip().upper()
-    if letra in "ABCDEFGHIJ":
-        return ord(letra) - ord("A")
-    return -1
 
 def coordenadas_validas(linha_idx, coluna_idx):
     return 0 <= linha_idx < 10 and 0 <= coluna_idx < 15
@@ -196,3 +189,5 @@ def desbloquear_cadeira():
         print("A cadeira já está livre.")
     elif estado == "X":
         print("A cadeira está ocupada e não está bloqueada.")
+
+main()
