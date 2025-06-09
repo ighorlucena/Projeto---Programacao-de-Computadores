@@ -291,7 +291,6 @@ def atualizar_mapa():
             elif estado == "B":
                 btn.config(bg="gray")
 
-
 if __name__ == "__main__":
     modo = input("Escolha o modo (1 = Terminal, 2 = Interface): ").strip()
     if modo == "1":
