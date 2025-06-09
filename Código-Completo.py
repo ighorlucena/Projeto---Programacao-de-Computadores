@@ -193,114 +193,108 @@ from tkinter import messagebox
 LINHAS = 10
 COLUNAS = 15
 
-class CinemaGUI:
-    def __init__(self, master):
-        self.master = master
-        self.master.title("Sistema de Reserva de Assentos - Cinema")
+sala = [["O" for _ in range(COLUNAS)] for _ in range(LINHAS)]
 
-        self.modo = tk.StringVar(value="reservar")
+modo_atual = "reservar"
+botoes = []
 
-        self.criar_interface()
+def clique_assento(i, j):
+    global sala, modo_atual
+    estado = sala[i][j]
+    posicao = f"{chr(ord('A') + i)}{j+1}"
 
-    def criar_interface(self):
-        frame_top = tk.Frame(self.master)
-        frame_top.pack(pady=10)
+    if modo_atual == "reservar":
+        if estado == "O":
+            sala[i][j] = "X"
+            messagebox.showinfo("Reserva", f"Assento {posicao} reservado com sucesso!")
+        elif estado == "X":
+            messagebox.showwarning("Reservado", f"Assento {posicao} já está reservado.")
+        elif estado == "B":
+            messagebox.showerror("Bloqueado", f"Assento {posicao} está bloqueado e não pode ser reservado.")
 
-        tk.Label(frame_top, text="Modo atual:").pack(side=tk.LEFT, padx=5)
+    elif modo_atual == "cancelar":
+        if estado == "X":
+            sala[i][j] = "O"
+            messagebox.showinfo("Cancelado", f"Reserva do assento {posicao} cancelada.")
+        elif estado == "O":
+            messagebox.showwarning("Livre", f"Assento {posicao} já está livre.")
+        elif estado == "B":
+            messagebox.showerror("Bloqueado", f"Assento {posicao} está bloqueado e não pode ser alterado.")
 
-        modos = [("Reservar", "reservar"), ("Cancelar Reserva", "cancelar"),
-                 ("Bloquear", "bloquear"), ("Desbloquear", "desbloquear")]
+    elif modo_atual == "bloquear":
+        if estado == "O":
+            sala[i][j] = "B"
+            messagebox.showinfo("Bloqueado", f"Assento {posicao} bloqueado com sucesso.")
+        elif estado == "X":
+            messagebox.showwarning("Reservado", f"Assento {posicao} está ocupado. Cancele antes de bloquear.")
+        elif estado == "B":
+            messagebox.showinfo("Bloqueado", f"Assento {posicao} já está bloqueado.")
 
-        for texto, valor in modos:
-            tk.Radiobutton(frame_top, text=texto, variable=self.modo, value=valor).pack(side=tk.LEFT, padx=5)
+    elif modo_atual == "desbloquear":
+        if estado == "B":
+            sala[i][j] = "O"
+            messagebox.showinfo("Desbloqueado", f"Assento {posicao} desbloqueado com sucesso.")
+        elif estado == "O":
+            messagebox.showinfo("Livre", f"Assento {posicao} já está livre.")
+        elif estado == "X":
+            messagebox.showwarning("Ocupado", f"Assento {posicao} está ocupado e não pode ser desbloqueado.")
 
-        self.frame_sala = tk.Frame(self.master)
-        self.frame_sala.pack()
+    atualizar_mapa()
 
-        self.botoes = []
-        for i in range(LINHAS):
-            linha_botoes = []
-            for j in range(COLUNAS):
-                label = f"{chr(ord('A') + i)}{j+1}"
-                btn = tk.Button(self.frame_sala, text=label, width=4, height=2,
-                                font=("Arial", 10),
-                                command=lambda x=i, y=j: self.clique_assento(x, y))
-                btn.grid(row=i, column=j, padx=1, pady=1)
-                linha_botoes.append(btn)
-            self.botoes.append(linha_botoes)
+def mudar_modo(novo_modo):
+    global modo_atual
+    modo_atual = novo_modo
 
-        frame_legenda = tk.Frame(self.master)
-        frame_legenda.pack(pady=10)
+def criar_interface():
+    root = tk.Tk()
+    root.title("Sistema de Reserva de Assentos - Cinema")
 
-        tk.Label(frame_legenda, text="Legenda:").pack()
-        tk.Label(
-            frame_legenda,
-            text="Verde = Livre   Vermelho = Ocupado   Cinza = Bloqueado",
-            font=("Arial", 10)
-        ).pack()
+    frame_top = tk.Frame(root)
+    frame_top.pack(pady=10)
 
-        self.atualizar_mapa()
+    tk.Label(frame_top, text="Modo atual:").pack(side=tk.LEFT, padx=5)
 
-    def clique_assento(self, i, j):
-        estado = sala[i][j]
-        posicao = f"{chr(ord('A') + i)}{j+1}"
-        modo = self.modo.get()
+    for texto, valor in [("Reservar", "reservar"), ("Cancelar", "cancelar"), ("Bloquear", "bloquear"), ("Desbloquear", "desbloquear")]:
+        tk.Radiobutton(frame_top, text=texto, value=valor, variable=tk.StringVar(value=modo_atual),
+                       command=lambda v=valor: mudar_modo(v)).pack(side=tk.LEFT, padx=5)
 
-        if modo == "reservar":
+    frame_sala = tk.Frame(root)
+    frame_sala.pack()
+
+    for i in range(LINHAS):
+        linha_botoes = []
+        for j in range(COLUNAS):
+            label = f"{chr(ord('A') + i)}{j+1}"
+            btn = tk.Button(frame_sala, text=label, width=4, height=2, font=("Arial", 10),
+                            command=lambda x=i, y=j: clique_assento(x, y))
+            btn.grid(row=i, column=j, padx=1, pady=1)
+            linha_botoes.append(btn)
+        botoes.append(linha_botoes)
+
+    frame_legenda = tk.Frame(root)
+    frame_legenda.pack(pady=10)
+    tk.Label(frame_legenda, text="Legenda:").pack()
+    tk.Label(frame_legenda, text="Verde = Livre   Vermelho = Ocupado   Cinza = Bloqueado", font=("Arial", 10)).pack()
+
+    atualizar_mapa()
+    root.mainloop()
+
+def atualizar_mapa():
+    for i in range(LINHAS):
+        for j in range(COLUNAS):
+            estado = sala[i][j]
+            btn = botoes[i][j]
             if estado == "O":
-                sala[i][j] = "X"
-                messagebox.showinfo("Reserva", f"Assento {posicao} reservado com sucesso!")
+                btn.config(bg="green")
             elif estado == "X":
-                messagebox.showwarning("Reservado", f"Assento {posicao} já está reservado.")
+                btn.config(bg="red")
             elif estado == "B":
-                messagebox.showerror("Bloqueado", f"Assento {posicao} está bloqueado e não pode ser reservado.")
+                btn.config(bg="gray")
 
-        elif modo == "cancelar":
-            if estado == "X":
-                sala[i][j] = "O"
-                messagebox.showinfo("Cancelado", f"Reserva do assento {posicao} cancelada.")
-            elif estado == "O":
-                messagebox.showwarning("Livre", f"Assento {posicao} já está livre.")
-            elif estado == "B":
-                messagebox.showerror("Bloqueado", f"Assento {posicao} está bloqueado e não pode ser alterado.")
-
-        elif modo == "bloquear":
-            if estado == "O":
-                sala[i][j] = "B"
-                messagebox.showinfo("Bloqueado", f"Assento {posicao} bloqueado com sucesso.")
-            elif estado == "X":
-                messagebox.showwarning("Reservado", f"Assento {posicao} está ocupado. Cancele antes de bloquear.")
-            elif estado == "B":
-                messagebox.showinfo("Bloqueado", f"Assento {posicao} já está bloqueado.")
-
-        elif modo == "desbloquear":
-            if estado == "B":
-                sala[i][j] = "O"
-                messagebox.showinfo("Desbloqueado", f"Assento {posicao} desbloqueado com sucesso.")
-            elif estado == "O":
-                messagebox.showinfo("Livre", f"Assento {posicao} já está livre.")
-            elif estado == "X":
-                messagebox.showwarning("Ocupado", f"Assento {posicao} está ocupado e não pode ser desbloqueado.")
-
-        self.atualizar_mapa()
-
-    def atualizar_mapa(self):
-        for i in range(LINHAS):
-            for j in range(COLUNAS):
-                estado = sala[i][j]
-                btn = self.botoes[i][j]
-                if estado == "O":
-                    btn.config(bg="green", state=tk.NORMAL)
-                elif estado == "X":
-                    btn.config(bg="red", state=tk.NORMAL)
-                elif estado == "B":
-                    btn.config(bg="gray", state=tk.NORMAL)
 
 if __name__ == "__main__":
     modo = input("Escolha o modo (1 = Terminal, 2 = Interface): ").strip()
     if modo == "1":
         main()
     else:
-        root = tk.Tk()
-        app = CinemaGUI(root)
-        root.mainloop()
+        criar_interface()
