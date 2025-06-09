@@ -6,8 +6,8 @@ def linha_para_indice(letra):
         return ord(letra) - ord("A")
     return -1
 
-def coordenadas_validas(linha, coluna):
-    return 0 <= linha < 10 and 0 <= coluna < 15
+def coordenadas_validas(linha_idx, coluna_idx):
+    return 0 <= linha_idx < 10 and 0 <= coluna_idx < 15
 
 def mostrar_sala():
     print("\n Mapa da Sala de Cinema\n")
@@ -31,30 +31,6 @@ def menu():
     print("6. Ver ocupação")
     print("7. Sair")
     return input("Escolha: ")
-
-def main():
-    while True:
-        opcao = menu()
-        if opcao == "1":
-            mostrar_sala()
-        elif opcao == "2":
-            reservar_cadeira()
-        elif opcao == "3":
-            cancelar_reserva()
-        elif opcao == "4":
-            bloquear_cadeira()
-        elif opcao == "5":
-            desbloquear_cadeira()
-        elif opcao == "6":
-            ver_ocupacao()
-        elif opcao == "7":
-            print("Tchau!")
-            break
-        else:
-            print("Opção inválida.")
-
-def coordenadas_validas(linha_idx, coluna_idx):
-    return 0 <= linha_idx < 10 and 0 <= coluna_idx < 15
 
 def reservar_cadeira():
     linha = input("Digite a letra da Linha (A-J): ").strip().upper()
@@ -189,5 +165,26 @@ def desbloquear_cadeira():
         print("A cadeira já está livre.")
     elif estado == "X":
         print("A cadeira está ocupada e não está bloqueada.")
+
+def main():
+    while True:
+        opcao = menu()
+        if opcao == "1":
+            mostrar_sala()
+        elif opcao == "2":
+            reservar_cadeira()
+        elif opcao == "3":
+            cancelar_reserva()
+        elif opcao == "4":
+            bloquear_cadeira()
+        elif opcao == "5":
+            desbloquear_cadeira()
+        elif opcao == "6":
+            ver_ocupacao()
+        elif opcao == "7":
+            print("Tchau!")
+            break
+        else:
+            print("Opção inválida.")
 
 main()
