@@ -200,8 +200,6 @@ class CinemaGUI:
 
         self.modo = tk.StringVar(value="reservar")
 
-        self.sala = [["O"] * COLUNAS for _ in range(LINHAS)]
-
         self.criar_interface()
 
     def criar_interface(self):
@@ -231,7 +229,6 @@ class CinemaGUI:
                 linha_botoes.append(btn)
             self.botoes.append(linha_botoes)
 
-        # Legenda
         frame_legenda = tk.Frame(self.master)
         frame_legenda.pack(pady=10)
 
@@ -245,13 +242,13 @@ class CinemaGUI:
         self.atualizar_mapa()
 
     def clique_assento(self, i, j):
-        estado = self.sala[i][j]
+        estado = sala[i][j]
         posicao = f"{chr(ord('A') + i)}{j+1}"
         modo = self.modo.get()
 
         if modo == "reservar":
             if estado == "O":
-                self.sala[i][j] = "X"
+                sala[i][j] = "X"
                 messagebox.showinfo("Reserva", f"Assento {posicao} reservado com sucesso!")
             elif estado == "X":
                 messagebox.showwarning("Reservado", f"Assento {posicao} já está reservado.")
@@ -260,7 +257,7 @@ class CinemaGUI:
 
         elif modo == "cancelar":
             if estado == "X":
-                self.sala[i][j] = "O"
+                sala[i][j] = "O"
                 messagebox.showinfo("Cancelado", f"Reserva do assento {posicao} cancelada.")
             elif estado == "O":
                 messagebox.showwarning("Livre", f"Assento {posicao} já está livre.")
@@ -269,7 +266,7 @@ class CinemaGUI:
 
         elif modo == "bloquear":
             if estado == "O":
-                self.sala[i][j] = "B"
+                sala[i][j] = "B"
                 messagebox.showinfo("Bloqueado", f"Assento {posicao} bloqueado com sucesso.")
             elif estado == "X":
                 messagebox.showwarning("Reservado", f"Assento {posicao} está ocupado. Cancele antes de bloquear.")
@@ -278,7 +275,7 @@ class CinemaGUI:
 
         elif modo == "desbloquear":
             if estado == "B":
-                self.sala[i][j] = "O"
+                sala[i][j] = "O"
                 messagebox.showinfo("Desbloqueado", f"Assento {posicao} desbloqueado com sucesso.")
             elif estado == "O":
                 messagebox.showinfo("Livre", f"Assento {posicao} já está livre.")
@@ -290,19 +287,20 @@ class CinemaGUI:
     def atualizar_mapa(self):
         for i in range(LINHAS):
             for j in range(COLUNAS):
-                estado = self.sala[i][j]
+                estado = sala[i][j]
                 btn = self.botoes[i][j]
                 if estado == "O":
                     btn.config(bg="green", state=tk.NORMAL)
                 elif estado == "X":
-                    btn.config(bg="red", state=tk.DISABLED)
+                    btn.config(bg="red", state=tk.NORMAL)
                 elif estado == "B":
-                    btn.config(bg="gray", state=tk.DISABLED)
+                    btn.config(bg="gray", state=tk.NORMAL)
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = CinemaGUI(root)
-    root.mainloop()
-
-
-main()
+    modo = input("Escolha o modo (1 = Terminal, 2 = Interface): ").strip()
+    if modo == "1":
+        main()
+    else:
+        root = tk.Tk()
+        app = CinemaGUI(root)
+        root.mainloop()
