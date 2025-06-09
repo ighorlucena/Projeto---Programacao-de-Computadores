@@ -1,1 +1,58 @@
+# 1. Sala global
+sala = [["O" for _ in range(15)] for _ in range(10)]
 
+# 2. Funções auxiliares
+def linha_para_indice(letra):
+    return ord(letra.upper()) - ord("A")
+
+def coordenadas_validas(linha, coluna):
+    return 0 <= linha < 10 and 0 <= coluna < 15
+
+# 3. Mostrar sala (sem parâmetros)
+def mostrar_sala():
+    print("\nMapa da Sala:")
+    print("   " + " ".join([str(i+1).rjust(2) for i in range(15)]))
+    for i, linha in enumerate(sala):
+        letra = chr(ord("A") + i)
+        print(letra + "  " + " ".join(linha))
+
+# 4. Menu
+def menu():
+    print("\n1. Ver sala")
+    print("2. Reservar assento")
+    print("3. Sair")
+    return input("Escolha: ")
+
+# 5. Main
+def main():
+    while True:
+        opcao = menu()
+        if opcao == "1":
+            mostrar_sala()
+        elif opcao == "2":
+            mostrar_sala()
+            l = input("Digite a letra da linha (A-J): ").strip().upper()
+            c = input("Digite o número da coluna (1-15): ").strip()
+            
+            if not c.isdigit():
+                print("Coluna inválida.")
+                continue
+
+            linha_idx = linha_para_indice(l)
+            coluna_idx = int(c) - 1
+
+            if coordenadas_validas(linha_idx, coluna_idx):
+                if sala[linha_idx][coluna_idx] == "O":
+                    sala[linha_idx][coluna_idx] = "X"
+                    print("Assento reservado!")
+                else:
+                    print("Assento ocupado.")
+            else:
+                print("Coordenadas inválidas.")
+        elif opcao == "3":
+            print("Tchau!")
+            break
+        else:
+            print("Opção inválida.")
+
+main()
